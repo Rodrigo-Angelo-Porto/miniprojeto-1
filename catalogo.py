@@ -77,13 +77,93 @@ class Catalogo:
         return sorted(intersecao)
 
     # --- dados de um conteúdo ---
-    def rating_de(self, conteudo_id: str) -> float | None: ...
-    def duracao_total_de(self, conteudo_id: str) -> int | None: ...
-    def generos_de(self, conteudo_id: str) -> list[str] | None: ...
-    def plataformas_de(self, conteudo_id: str) -> list[str] | None: ...
-    def data_adicionado_de(self, conteudo_id: str) -> str | None: ...
-    def execucoes_de(self, conteudo_id: str) -> int | None: ...
-    def conteudos_do_genero(self, genero: str) -> list[str]: ...
+    def rating_de(self, conteudo_id: str) -> float | None:
+
+        if conteudo_id not in self.id_conteudo:
+            return None
+        rating = self.id_conteudo[conteudo_id].get("rating", None)
+        if rating is None:
+            return None
+        return float(rating)
+
+    def duracao_total_de(self, conteudo_id: str) -> int | None:
+        total = 0
+        if conteudo_id not in self.id_conteudo:
+            return None
+        elif self.id_conteudo[conteudo_id].get("tipo") == "album":
+            for faixa in self.id_conteudo[conteudo_id].get("faixas", []):
+                duracao = faixa.get("duracao_seg", None)
+                if duracao is not None:
+                    total += duracao
+            return total
+        elif self.id_conteudo[conteudo_id].get("tipo") == "musica":
+            duracao = self.id_conteudo[conteudo_id].get("duracao_seg", None)
+            if duracao is None:
+                return None
+            return int(duracao)
+
+    def generos_de(self, conteudo_id: str) -> list[str] | None:
+        if conteudo_id not in self.id_conteudo:
+            return None
+
+        generos = self.id_conteudo[conteudo_id].get("generos", None)
+        if generos is None:
+            return None
+    
+        pendentes = [generos]
+        generos_achatados = []
+
+        while pendentes:
+            genero = pendentes.pop()
+
+            if isinstance(genero, str):
+                generos_achatados.append(genero)
+            elif isinstance(genero, list):
+                for elemento in genero:
+                    pendentes.append(elemento)
+
+        return sorted(generos_achatados)
+
+    def plataformas_de(self, conteudo_id: str) -> list[str] | None:
+        if conteudo_id not in self.id_conteudo:
+            return None
+        todas_as_plataformas = self.id_conteudo[conteudo_id].get("plataformas", [])
+        return sorted(todas_as_plataformas)
+
+    def data_adicionado_de(self, conteudo_id: str) -> str | None:
+        if conteudo_id not in self.id_conteudo:
+            return None
+        formato_do_ano = self.id_conteudo[conteudo_id].get("data_adicionado", None)
+
+        if formato_do_ano is None:
+            return None
+
+        if "/" in formato_do_ano:
+            dia, mes, ano = formato_do_ano.split("/")
+            return f"{ano}-{mes}-{dia}"
+
+        return formato_do_ano
+
+    def execucoes_de(self, conteudo_id: str) -> int | None:
+        if conteudo_id not in self.id_conteudo:
+            return None
+        numero_de_execucoes = self.id_conteudo[conteudo_id].get("engajamento", {}).get("execucoes")
+        if numero_de_execucoes is None:
+            return None
+        if isinstance(numero_de_execucoes, str):
+            numero_de_execucoes = numero_de_execucoes.replace(",", "")
+        return int(numero_de_execucoes)
+
+    def conteudos_do_genero(self, genero: str) -> list[str]:
+        conteudos = []
+
+        for conteudo in self.id_conteudo:
+            genero_da_musica = self.generos_de(conteudo)
+
+            if genero_da_musica is not None and genero in genero_da_musica:
+                conteudos.append(conteudo)
+
+        return sorted(conteudos)
 
     # --- fila de reprodução ---
     def enfileirar(self, conteudo_id: str) -> bool:

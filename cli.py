@@ -4,7 +4,6 @@ Uso: python cli.py catalogo_final.json
 """
 
 import sys
-
 from catalogo import Catalogo
 
 
@@ -18,7 +17,7 @@ def formatar_conteudo(conteudo_id):
     titulo = conteudo["titulo"]
     artista = conteudo["artista"]
 
-    return f"{conteudo_id} — {titulo} — {artista}"
+    return f"{titulo} — {artista}"
 
 
 def terminal():
@@ -37,16 +36,25 @@ def terminal():
         print("9. Ver fila atual")
         print("0. Sair")
 
-        comando = int(input("> "))
+        try:
+            comando = int(input("> "))
+        except ValueError:
+            print("Comando inválido. Digite um número de 0 a 9.")
+            continue
 
         if comando == 0:
             break
 
         elif comando == 1:
-            print(catalogo.listar_usuarios())
+            usuarios = catalogo.listar_usuarios()
+
+            print("Usuários:")
+
+            for nome in usuarios:
+                print(nome)
 
         elif comando == 2:
-            nome = input("Digite o nome do usuário: ")
+            nome = input("Digite o nome do usuário: ").strip()
             usuario_id = catalogo.buscar_usuario_por_nome(nome)
 
             if usuario_id is None:
@@ -63,7 +71,7 @@ def terminal():
                         print(formatar_conteudo(conteudo_id))
 
         elif comando == 3:
-            nome = input("Digite o nome do usuário: ")
+            nome = input("Digite o nome do usuário: ").strip()
             usuario_id = catalogo.buscar_usuario_por_nome(nome)
 
             if usuario_id is None:
@@ -76,9 +84,16 @@ def terminal():
                 else:
                     print(f"A playlist possui {len(playlist)} conteúdos.")
 
-                    posicao = int(
-                        input(f"Digite a posição (1 a {len(playlist)}): ")
-                    ) - 1
+                    try:
+                        posicao = int(
+                            input(
+                                f"Digite a posição "
+                                f"(1 a {len(playlist)}): "
+                            )
+                        ) - 1
+                    except ValueError:
+                        print("Posição inválida. Digite um número inteiro.")
+                        continue
 
                     conteudo_id = catalogo.conteudo_na_posicao(
                         usuario_id,
@@ -134,24 +149,34 @@ def terminal():
                     print(formatar_conteudo(conteudo_id))
 
         elif comando == 5:
-            conteudo_id = input("Digite o ID do conteúdo: ")
+            conteudo_id = input("Digite o ID do conteúdo: ").strip()
+
+            if conteudo_id not in catalogo.id_conteudo:
+                print(f"Conteúdo {conteudo_id} não encontrado.")
+                continue
+
+            conteudo = catalogo.id_conteudo[conteudo_id]
 
             rating = catalogo.rating_de(conteudo_id)
             duracao = catalogo.duracao_total_de(conteudo_id)
             generos = catalogo.generos_de(conteudo_id)
             plataformas = catalogo.plataformas_de(conteudo_id)
             data_adicionado = catalogo.data_adicionado_de(conteudo_id)
-            execucoes = catalogo.execucoes_de(conteudo_id)
 
+            print(formatar_conteudo(conteudo_id))
+            print(f"Tipo: {conteudo['tipo']}")
             print(f"Rating: {rating}")
             print(f"Duração: {duracao} segundos")
             print(f"Gêneros: {generos}")
             print(f"Plataformas: {plataformas}")
             print(f"Data adicionada: {data_adicionado}")
-            print(f"Execuções: {execucoes}")
+
+            if conteudo["tipo"] == "musica":
+                execucoes = catalogo.execucoes_de(conteudo_id)
+                print(f"Execuções: {execucoes}")
 
         elif comando == 6:
-            genero = input("Digite o gênero: ")
+            genero = input("Digite o gênero: ").strip()
             conteudos = catalogo.conteudos_do_genero(genero)
 
             if len(conteudos) == 0:
@@ -166,12 +191,13 @@ def terminal():
                     print(formatar_conteudo(conteudo_id))
 
         elif comando == 7:
-            conteudo_id = input("Digite o ID do conteúdo: ")
+            conteudo_id = input("Digite o ID do conteúdo: ").strip()
 
             if catalogo.enfileirar(conteudo_id):
-                print(f"Conteúdo {conteudo_id} enfileirado com sucesso.")
+                print("Conteúdo enfileirado:")
+                print(formatar_conteudo(conteudo_id))
             else:
-                print(f"Falha ao enfileirar o conteúdo {conteudo_id}.")
+                print(f"Conteúdo {conteudo_id} não encontrado.")
 
         elif comando == 8:
             proximo_conteudo = catalogo.proximo()
@@ -192,6 +218,9 @@ def terminal():
 
                 for conteudo_id in fila_atual:
                     print(formatar_conteudo(conteudo_id))
+
+        else:
+            print("Comando inválido. Digite um número de 0 a 9.")
 
 
 terminal()

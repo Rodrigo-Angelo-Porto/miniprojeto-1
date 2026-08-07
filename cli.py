@@ -13,7 +13,6 @@ catalogo = Catalogo(caminho_catalogo)
 
 def formatar_conteudo(conteudo_id):
     conteudo = catalogo.id_conteudo[conteudo_id]
-
     titulo = conteudo["titulo"]
     artista = conteudo["artista"]
 
@@ -47,7 +46,6 @@ def terminal():
 
         elif comando == 1:
             usuarios = catalogo.listar_usuarios()
-
             print("Usuários:")
 
             for nome in usuarios:
@@ -85,34 +83,20 @@ def terminal():
                     print(f"A playlist possui {len(playlist)} conteúdos.")
 
                     try:
-                        posicao = int(
-                            input(
-                                f"Digite a posição "
-                                f"(1 a {len(playlist)}): "
-                            )
-                        ) - 1
+                        posicao = int(input(f"Digite a posição (1 a {len(playlist)}): ")) - 1
                     except ValueError:
                         print("Posição inválida. Digite um número inteiro.")
                         continue
 
-                    conteudo_id = catalogo.conteudo_na_posicao(
-                        usuario_id,
-                        posicao
-                    )
+                    conteudo_id = catalogo.conteudo_na_posicao(usuario_id, posicao)
 
                     if conteudo_id is None:
-                        print(
-                            f"Posição {posicao + 1} inválida "
-                            f"para o usuário {nome}."
-                        )
+                        print(f"Posição {posicao + 1} inválida para o usuário {nome}.")
                     else:
                         print(formatar_conteudo(conteudo_id))
 
         elif comando == 4:
-            nomes = input(
-                "Digite os nomes dos usuários separados por vírgula: "
-            ).split(",")
-
+            nomes = input("Digite os nomes dos usuários separados por vírgula: ").split(",")
             usuario_ids = []
             usuario_invalido = False
 
@@ -156,7 +140,6 @@ def terminal():
                 continue
 
             conteudo = catalogo.id_conteudo[conteudo_id]
-
             rating = catalogo.rating_de(conteudo_id)
             duracao = catalogo.duracao_total_de(conteudo_id)
             generos = catalogo.generos_de(conteudo_id)
@@ -180,10 +163,7 @@ def terminal():
             conteudos = catalogo.conteudos_do_genero(genero)
 
             if len(conteudos) == 0:
-                print(
-                    f"Nenhum conteúdo encontrado "
-                    f"para o gênero {genero}."
-                )
+                print(f"Nenhum conteúdo encontrado para o gênero {genero}.")
             else:
                 print(f"Conteúdos do gênero {genero}:")
 

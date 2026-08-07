@@ -6,7 +6,7 @@ O projeto foi dividido em arquivos com funções diferentes. O catalogo.py tem C
 
 Foram criados dicionários para localizar usuários e conteúdos, evitando percorrer todas as listas a cada busca.
 
-Na busca por nome, os nomes são convertidos para letras minúsculas, para evitar que por diferença de letras mmaiúsculas e minúsculas dê erro para o usuário.
+Na busca por nome, os nomes são convertidos para letras minúsculas, para evitar que por diferença de letras maiúsculas e minúsculas dê erro para o usuário.
 
 As playlists são representadas por listas, para preservar a ordem dos conteúdos. Para encontrar conteúdos presentes em várias playlists, elas são convertidas temporariamente em sets, porque nos sets nâo tem itens duplicados, para calcular a interseção.
 

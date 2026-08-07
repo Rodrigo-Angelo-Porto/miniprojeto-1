@@ -3,6 +3,12 @@
 Uso: python cli.py catalogo_final.json
 """
 
+import sys
+from catalogo import Catalogo
+
+caminho_catalogo = sys.argv[1]
+catalogo = Catalogo(caminho_catalogo)
+
 def terminal():
     while True:
         print("Trilha sonora")
@@ -99,3 +105,13 @@ def terminal():
                 print("Fila atual:")
                 for conteudo_id in fila_atual:
                     print(conteudo_id)
+
+def formatar_conteudo(conteudo_id):
+    conteudo = catalogo.id_conteudo[conteudo_id]
+
+    titulo = conteudo["titulo"]
+    artista = conteudo["artista"]
+
+    return f"{conteudo_id} — {titulo} — {artista}"
+
+terminal()

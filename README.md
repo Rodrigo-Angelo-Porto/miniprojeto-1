@@ -8,7 +8,7 @@ Foram criados dicionários para localizar usuários e conteúdos, evitando perco
 
 Na busca por nome, os nomes são convertidos para letras minúsculas, para evitar que por diferença de letras maiúsculas e minúsculas dê erro para o usuário.
 
-As playlists são representadas por listas, para preservar a ordem dos conteúdos. Para encontrar conteúdos presentes em várias playlists, elas são convertidas temporariamente em sets, porque nos sets nâo tem itens duplicados, para calcular a interseção.
+As playlists são representadas por listas, para preservar a ordem dos conteúdos. Para encontrar conteúdos presentes em várias playlists, elas são convertidas temporariamente em sets, porque nos sets não tem itens duplicados, para calcular a interseção.
 
 A fila de reprodução também utiliza uma lista. Os conteúdos são adicionados ao final com append() e retirados do início com pop(0), funcionando como FIFO, já que a primeira música adicionada será a primeira reproduzida.
 
